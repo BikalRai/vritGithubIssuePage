@@ -18,13 +18,39 @@ import {
     Typography,
 } from '@mui/material';
 import { Container } from '@mui/system';
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useReducer, useState } from 'react';
 
 import { Link } from 'react-router-dom';
 
-const options = [1, 2, 3];
+const initialState = {
+    issues: [],
+};
+
+const reducer = (state, action) => {
+    // axios.get('https://github.com/facebook/react').then(({ data }) => {
+    //     state = data;
+    // });
+};
 
 const Issues = () => {
+    const [data, dispatch] = useReducer(reducer, initialState);
+    const [data1, setData1] = useState([]);
+
+    const getData = async () => {
+        await axios
+            .get('https://github.com/facebook/react/issues')
+            .then(({ data }) => {
+                setData1(data);
+            });
+
+        console.log(data1, 'data1');
+    };
+
+    useEffect(() => {
+        getData();
+    }, []);
+
     return (
         <>
             <main>
