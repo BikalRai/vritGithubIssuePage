@@ -1,68 +1,131 @@
 import {
-    Breadcrumbs,
-    Button,
+    Badge,
+    Box,
     Card,
+    CardActions,
     CardContent,
     Chip,
-    ClickAwayListener,
     Grid,
-    Grow,
-    List,
-    ListItem,
-    ListItemText,
-    Menu,
-    MenuItem,
-    MenuList,
-    Paper,
-    Popper,
+    Pagination,
     Typography,
 } from '@mui/material';
+
 import { Container } from '@mui/system';
 import axios from 'axios';
 import React, { useEffect, useReducer, useState } from 'react';
+import HiveIcon from '@mui/icons-material/Hive';
 
 import { Link } from 'react-router-dom';
 
 const initialState = {
+    loading: true,
+    error: '',
     issues: [],
 };
 
 const reducer = (state, action) => {
-    // axios.get('https://github.com/facebook/react').then(({ data }) => {
-    //     state = data;
-    // });
+    console.log(action, 'action type');
+
+    switch (action.type) {
+        case 'FETCH_SUCCESS':
+            return {
+                loading: false,
+                issues: action.payload,
+                error: '',
+            };
+        case 'FETCH_ERROR':
+            return {
+                loading: false,
+                issues: [],
+                error: 'Something went wrong',
+            };
+        default:
+            return state;
+    }
 };
 
 const Issues = () => {
-    const [data, dispatch] = useReducer(reducer, initialState);
-    const [data1, setData1] = useState([]);
-
-    const getData = async () => {
-        await axios
-            .get('https://github.com/facebook/react/issues')
-            .then(({ data }) => {
-                setData1(data);
-            });
-
-        console.log(data1, 'data1');
-    };
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const [page, setPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     useEffect(() => {
-        getData();
+        axios
+            .get('https://63c1863699c0a15d28ec247b.mockapi.io/details')
+            .then(({ data }) => {
+                dispatch({ type: 'FETCH_SUCCESS', payload: data });
+                console.log(data, 'data');
+            })
+            .catch((error) => dispatch({ type: 'FETCH_ERROR' }));
     }, []);
+
+    console.log(state, 'state');
+
+    const handlePage = (e, newPage) => {
+        setPage(newPage);
+        console.log(page, 'page');
+    };
 
     return (
         <>
             <main>
-                <Card
-                    variant="outlined"
-                    sx={{ backgroundColor: 'rgba(0, 105, 255, 0.2)' }}
-                >
-                    <CardContent>
-                        <Typography component={Link}>Title</Typography>
-                        <Typography>Last logged in</Typography>
-                    </CardContent>
-                </Card>
+                <Container>
+                    {state.issues
+                        .slice(
+                            page * rowsPerPage - rowsPerPage,
+                            page * rowsPerPage
+                        )
+                        .map((issue, index) => {
+                            return (
+                                <Grid
+                                    key={index}
+                                    container
+                                    py={1}
+                                    sx={{ width: '80%', margin: 'auto' }}
+                                >
+                                    <Grid sx={{ width: '100%' }}>
+                                        <Card variant="outlined">
+                                            <CardContent
+                                                sx={{
+                                                    display: 'flex',
+                                                    gap: '2rem',
+                                                }}
+                                            >
+                                                <Badge color="primary">
+                                                    <HiveIcon />
+                                                </Badge>
+                                                <Typography component={Link}>
+                                                    {issue.firstName}
+                                                </Typography>
+                                                <Typography>
+                                                    {issue.lastName}
+                                                </Typography>
+                                            </CardContent>
+                                            <CardActions>
+                                                <Grid container>
+                                                    <Chip
+                                                        label="Type: Bug"
+                                                        color="error"
+                                                    />
+                                                </Grid>
+                                            </CardActions>
+                                        </Card>
+                                    </Grid>
+                                </Grid>
+                            );
+                        })}
+                    <Box
+                        my={2}
+                        sx={{ display: 'flex', justifyContent: 'center' }}
+                    >
+                        <Pagination
+                            onChange={handlePage}
+                            count={Math.ceil(state.issues.length / rowsPerPage)}
+                            variant="outlined"
+                            shape="rounded"
+                        />
+                    </Box>
+                </Container>
             </main>
         </>
     );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Breadcrumbs,
     Button,
@@ -6,17 +6,26 @@ import {
     Chip,
     ClickAwayListener,
     Container,
+    Divider,
     FormControl,
     Grid,
     Grow,
     Icon,
     InputAdornment,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
     Menu,
     MenuItem,
     MenuList,
     OutlinedInput,
     Paper,
     Popper,
+    SpeedDial,
+    SpeedDialAction,
+    SpeedDialIcon,
     Typography,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -34,46 +43,33 @@ import PrivacyTipIcon from '@mui/icons-material/PrivacyTip';
 import InsightsIcon from '@mui/icons-material/Insights';
 import { ArrowDropDown } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import MarkunreadMailboxIcon from '@mui/icons-material/MarkunreadMailbox';
+import { Box } from '@mui/system';
 
 const Header = () => {
-    const [open, setOpen] = React.useState(false);
-    const anchorRef = React.useRef(null);
+    const [display, setDisplay] = useState('none');
 
-    const handleToggle = () => {
-        setOpen((prevOpen) => !prevOpen);
+    const actions = [
+        { icon: <AddCircleOutlineIcon />, name: 'New Issue' },
+        { icon: <LocalOfferIcon />, name: 'Labels' },
+        { icon: <MarkunreadMailboxIcon />, name: 'Milestones' },
+    ];
+
+    const handleOpen = () => {
+        if (display === 'none') {
+            setDisplay('block');
+        } else {
+            setDisplay('none');
+        }
     };
 
-    const handleClose = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
-            return;
-        }
-
-        setOpen(false);
-    };
-
-    function handleListKeyDown(event) {
-        if (event.key === 'Tab') {
-            event.preventDefault();
-            setOpen(false);
-        } else if (event.key === 'Escape') {
-            setOpen(false);
-        }
-    }
-
-    // return focus to the button when we transitioned from !open -> open
-    const prevOpen = React.useRef(open);
-    React.useEffect(() => {
-        if (prevOpen.current === true && open === false) {
-            anchorRef.current.focus();
-        }
-
-        prevOpen.current = open;
-    }, [open]);
     return (
         <>
             <main>
                 <Container>
-                    <Grid container justifyContent="space-between">
+                    <Grid container justifyContent="space-between" my={5}>
                         <Grid item>
                             <Grid container alignItems="center" gap={1}>
                                 <ComputerIcon />
@@ -84,278 +80,187 @@ const Header = () => {
                         </Grid>
                         <Grid item>
                             <Grid container gap={1}>
-                                <Grid>
-                                    <Button
-                                        ref={anchorRef}
-                                        id="composition-button"
-                                        aria-controls={
-                                            open
-                                                ? 'composition-menu'
-                                                : undefined
-                                        }
-                                        aria-expanded={
-                                            open ? 'true' : undefined
-                                        }
-                                        aria-haspopup="true"
-                                        onClick={handleToggle}
-                                        // sx={{
-                                        //     backgroundColor: 'rgba(0,0,0, 0.5)',
-                                        //     color: 'white',
-                                        // }}
-                                        color="success"
-                                        variant="outlined"
-                                        size="small"
-                                        sx={{ display: 'flex', gap: '0.5rem' }}
-                                    >
-                                        <VisibilityIcon />
-                                        Watch
-                                        <Chip
-                                            label="public"
-                                            variant="outlined"
-                                        />
+                                <Grid item sx={{ position: 'relative' }}>
+                                    <Button onClick={() => handleOpen()}>
+                                        <VisibilityIcon /> Watch{' '}
+                                        <Chip variant="outlined" label="1234" />
+                                        <ArrowDropDown />
                                     </Button>
-                                    <Popper
-                                        open={open}
-                                        anchorEl={anchorRef.current}
-                                        role={undefined}
-                                        placement="bottom-start"
-                                        transition
-                                        disablePortal
+                                    <Box
+                                        sx={{
+                                            width: '100%',
+                                            maxWidth: 360,
+                                            bgcolor: 'gray',
+                                            position: 'absolute',
+                                            display: { display },
+                                        }}
                                     >
-                                        {({ TransitionProps, placement }) => (
-                                            <Grow
-                                                {...TransitionProps}
-                                                style={{
-                                                    transformOrigin:
-                                                        placement ===
-                                                        'bottom-start'
-                                                            ? 'left top'
-                                                            : 'left bottom',
-                                                }}
-                                            >
-                                                <Paper>
-                                                    <ClickAwayListener
-                                                        onClickAway={
-                                                            handleClose
-                                                        }
+                                        <nav aria-label="main mailbox folders">
+                                            <List>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton>
+                                                        {/* <ListItemIcon> */}
+                                                        <Typography>
+                                                            Participating and
+                                                            @mentions
+                                                        </Typography>
+                                                        {/* </ListItemIcon> */}
+                                                        <ListItemText />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton>
+                                                        {/* <ListItemIcon> */}
+                                                        <Typography>
+                                                            All activities
+                                                        </Typography>
+                                                        {/* </ListItemIcon> */}
+                                                        <ListItemText />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            </List>
+                                        </nav>
+                                        <Divider />
+                                        <nav aria-label="secondary mailbox folders">
+                                            <List>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton>
+                                                        <ListItemText primary="Trash" />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton
+                                                        component="a"
+                                                        href="#simple-list"
                                                     >
-                                                        <MenuList
-                                                            autoFocusItem={open}
-                                                            id="composition-menu"
-                                                            aria-labelledby="composition-button"
-                                                            onKeyDown={
-                                                                handleListKeyDown
-                                                            }
-                                                        >
-                                                            <MenuItem
-                                                                onClick={
-                                                                    handleClose
-                                                                }
-                                                            >
-                                                                Profile
-                                                            </MenuItem>
-                                                            <MenuItem
-                                                                onClick={
-                                                                    handleClose
-                                                                }
-                                                            >
-                                                                My account
-                                                            </MenuItem>
-                                                            <MenuItem
-                                                                onClick={
-                                                                    handleClose
-                                                                }
-                                                            >
-                                                                Logout
-                                                            </MenuItem>
-                                                        </MenuList>
-                                                    </ClickAwayListener>
-                                                </Paper>
-                                            </Grow>
-                                        )}
-                                    </Popper>
+                                                        <ListItemText primary="Spam" />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            </List>
+                                        </nav>
+                                    </Box>
                                 </Grid>
-                                <Grid>
-                                    <Button
-                                        ref={anchorRef}
-                                        id="composition-button"
-                                        aria-controls={
-                                            open
-                                                ? 'composition-menu'
-                                                : undefined
-                                        }
-                                        aria-expanded={
-                                            open ? 'true' : undefined
-                                        }
-                                        aria-haspopup="true"
-                                        onClick={handleToggle}
-                                        // sx={{
-                                        //     backgroundColor: 'rgba(0,0,0, 0.5)',
-                                        //     color: 'white',
-                                        // }}
-                                        color="success"
-                                        variant="outlined"
-                                        size="small"
-                                        sx={{ display: 'flex', gap: '0.5rem' }}
-                                    >
-                                        <VisibilityIcon />
-                                        Watch
-                                        <Chip
-                                            label="public"
-                                            variant="outlined"
-                                        />
+                                <Grid item sx={{ position: 'relative' }}>
+                                    <Button onClick={() => handleOpen()}>
+                                        <VisibilityIcon /> Watch{' '}
+                                        <Chip variant="outlined" label="1234" />
+                                        <ArrowDropDown />
                                     </Button>
-                                    <Popper
-                                        open={open}
-                                        anchorEl={anchorRef.current}
-                                        role={undefined}
-                                        placement="bottom-start"
-                                        transition
-                                        disablePortal
+                                    <Box
+                                        sx={{
+                                            width: '100%',
+                                            maxWidth: 360,
+                                            backgroundColor: 'black',
+                                            color: '#fff',
+                                            position: 'absolute',
+                                            display: { display },
+                                        }}
                                     >
-                                        {({ TransitionProps, placement }) => (
-                                            <Grow
-                                                {...TransitionProps}
-                                                style={{
-                                                    transformOrigin:
-                                                        placement ===
-                                                        'bottom-start'
-                                                            ? 'left top'
-                                                            : 'left bottom',
-                                                }}
-                                            >
-                                                <Paper>
-                                                    <ClickAwayListener
-                                                        onClickAway={
-                                                            handleClose
-                                                        }
+                                        <nav aria-label="main mailbox folders">
+                                            <List>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton>
+                                                        {/* <ListItemIcon> */}
+                                                        <Typography>
+                                                            Participating and
+                                                            @mentions
+                                                        </Typography>
+                                                        {/* </ListItemIcon> */}
+                                                        <ListItemText />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton>
+                                                        {/* <ListItemIcon> */}
+                                                        <Typography>
+                                                            All activities
+                                                        </Typography>
+                                                        {/* </ListItemIcon> */}
+                                                        <ListItemText />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            </List>
+                                        </nav>
+                                        <Divider />
+                                        <nav aria-label="secondary mailbox folders">
+                                            <List>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton>
+                                                        <ListItemText primary="Trash" />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton
+                                                        component="a"
+                                                        href="#simple-list"
                                                     >
-                                                        <MenuList
-                                                            autoFocusItem={open}
-                                                            id="composition-menu"
-                                                            aria-labelledby="composition-button"
-                                                            onKeyDown={
-                                                                handleListKeyDown
-                                                            }
-                                                        >
-                                                            <MenuItem
-                                                                onClick={
-                                                                    handleClose
-                                                                }
-                                                            >
-                                                                Profile
-                                                            </MenuItem>
-                                                            <MenuItem
-                                                                onClick={
-                                                                    handleClose
-                                                                }
-                                                            >
-                                                                My account
-                                                            </MenuItem>
-                                                            <MenuItem
-                                                                onClick={
-                                                                    handleClose
-                                                                }
-                                                            >
-                                                                Logout
-                                                            </MenuItem>
-                                                        </MenuList>
-                                                    </ClickAwayListener>
-                                                </Paper>
-                                            </Grow>
-                                        )}
-                                    </Popper>
+                                                        <ListItemText primary="Spam" />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            </List>
+                                        </nav>
+                                    </Box>
                                 </Grid>
-                                <Grid>
-                                    <Button
-                                        ref={anchorRef}
-                                        id="composition-button"
-                                        aria-controls={
-                                            open
-                                                ? 'composition-menu'
-                                                : undefined
-                                        }
-                                        aria-expanded={
-                                            open ? 'true' : undefined
-                                        }
-                                        aria-haspopup="true"
-                                        onClick={handleToggle}
-                                        // sx={{
-                                        //     backgroundColor: 'rgba(0,0,0, 0.5)',
-                                        //     color: 'white',
-                                        // }}
-                                        color="success"
-                                        variant="outlined"
-                                        size="small"
-                                        sx={{ display: 'flex', gap: '0.5rem' }}
-                                    >
-                                        <VisibilityIcon />
-                                        Watch
-                                        <Chip
-                                            label="public"
-                                            variant="outlined"
-                                        />
+                                <Grid item sx={{ position: 'relative' }}>
+                                    <Button onClick={() => handleOpen()}>
+                                        <VisibilityIcon /> Watch{' '}
+                                        <Chip variant="outlined" label="1234" />
+                                        <ArrowDropDown />
                                     </Button>
-                                    <Popper
-                                        open={open}
-                                        anchorEl={anchorRef.current}
-                                        role={undefined}
-                                        placement="bottom-start"
-                                        transition
-                                        disablePortal
+                                    <Box
+                                        sx={{
+                                            width: '100%',
+                                            maxWidth: 360,
+                                            backgroundColor: 'black',
+                                            color: '#fff',
+                                            position: 'absolute',
+                                            display: { display },
+                                        }}
                                     >
-                                        {({ TransitionProps, placement }) => (
-                                            <Grow
-                                                {...TransitionProps}
-                                                style={{
-                                                    transformOrigin:
-                                                        placement ===
-                                                        'bottom-start'
-                                                            ? 'left top'
-                                                            : 'left bottom',
-                                                }}
-                                            >
-                                                <Paper>
-                                                    <ClickAwayListener
-                                                        onClickAway={
-                                                            handleClose
-                                                        }
+                                        <nav aria-label="main mailbox folders">
+                                            <List>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton>
+                                                        {/* <ListItemIcon> */}
+                                                        <Typography>
+                                                            Participating and
+                                                            @mentions
+                                                        </Typography>
+                                                        {/* </ListItemIcon> */}
+                                                        <ListItemText />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton>
+                                                        {/* <ListItemIcon> */}
+                                                        <Typography>
+                                                            All activities
+                                                        </Typography>
+                                                        {/* </ListItemIcon> */}
+                                                        <ListItemText />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            </List>
+                                        </nav>
+                                        <Divider />
+                                        <nav aria-label="secondary mailbox folders">
+                                            <List>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton>
+                                                        <ListItemText primary="Trash" />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                                <ListItem disablePadding>
+                                                    <ListItemButton
+                                                        component="a"
+                                                        href="#simple-list"
                                                     >
-                                                        <MenuList
-                                                            autoFocusItem={open}
-                                                            id="composition-menu"
-                                                            aria-labelledby="composition-button"
-                                                            onKeyDown={
-                                                                handleListKeyDown
-                                                            }
-                                                        >
-                                                            <MenuItem
-                                                                onClick={
-                                                                    handleClose
-                                                                }
-                                                            >
-                                                                Profile
-                                                            </MenuItem>
-                                                            <MenuItem
-                                                                onClick={
-                                                                    handleClose
-                                                                }
-                                                            >
-                                                                My account
-                                                            </MenuItem>
-                                                            <MenuItem
-                                                                onClick={
-                                                                    handleClose
-                                                                }
-                                                            >
-                                                                Logout
-                                                            </MenuItem>
-                                                        </MenuList>
-                                                    </ClickAwayListener>
-                                                </Paper>
-                                            </Grow>
-                                        )}
-                                    </Popper>
+                                                        <ListItemText primary="Spam" />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            </List>
+                                        </nav>
+                                    </Box>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -401,7 +306,7 @@ const Header = () => {
                 </Container>
                 <Container>
                     <Grid container gap={2}>
-                        <Grid>
+                        <Grid item flexGrow={1}>
                             <Button>
                                 Filters <ArrowDropDown />
                             </Button>
@@ -411,7 +316,7 @@ const Header = () => {
                                 <MenuItem>Three</MenuItem>
                             </Menu>
 
-                            <FormControl sx={{ width: '50rem' }}>
+                            <FormControl sx={{ width: 'min(100%, 50rem)' }}>
                                 <OutlinedInput
                                     type="search"
                                     size="small"
@@ -427,8 +332,8 @@ const Header = () => {
                             </FormControl>
                         </Grid>
 
-                        <Grid>
-                            <ButtonGroup
+                        <Grid item>
+                            {/* <ButtonGroup
                                 variant="outlined"
                                 aria-label="outlined button group"
                             >
@@ -443,7 +348,25 @@ const Header = () => {
                                 sx={{ textTransform: 'capitalize' }}
                             >
                                 New issue
-                            </Button>
+                            </Button> */}
+                            <SpeedDial
+                                ariaLabel="SpeedDial basic example"
+                                // sx={{
+                                //     position: 'absolute',
+                                //     bottom: 16,
+                                //     right: 16,
+                                // }}
+                                icon={<SpeedDialIcon />}
+                                direction="left"
+                            >
+                                {actions.map((action) => (
+                                    <SpeedDialAction
+                                        key={action.name}
+                                        icon={action.icon}
+                                        tooltipTitle={action.name}
+                                    />
+                                ))}
+                            </SpeedDial>
                         </Grid>
                     </Grid>
                 </Container>
