@@ -10,7 +10,9 @@ const Comments = () => {
 
     const getData = () => {
         axios
-            .get(`https://api.github.com/repos/facebook/react/issues/`)
+            .get(
+                `https://api.github.com/repos/facebook/react/issues/${issueNumber}`
+            )
             .then(({ data }) => {
                 dispatch({ type: 'FETCH_SUCCESS', payload: data });
                 console.log(data, 'data');
@@ -23,8 +25,8 @@ const Comments = () => {
         // getComments();
     }, []);
 
-    console.log(data, 'iss');
-    return <>{issueNumber}</>;
+    console.log(data.issues, 'iss');
+    return <>{data.issues.body}</>;
 };
 
 export default Comments;
