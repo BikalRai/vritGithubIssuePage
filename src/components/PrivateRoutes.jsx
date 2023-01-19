@@ -8,7 +8,7 @@ const PrivateRoutes = () => {
         <>
             <Routes>
                 <Route path="/issues" element={<Issues />} />
-                <Route path="/issues/" element={<Comments />} />
+                <Route path="/issues/:number" element={<Comments />} />
             </Routes>
         </>
     );

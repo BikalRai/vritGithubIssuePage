@@ -18,36 +18,40 @@ import HiveIcon from '@mui/icons-material/Hive';
 
 import { Link, useNavigate } from 'react-router-dom';
 import ModeCommentIcon from '@mui/icons-material/ModeComment';
+import {
+    initialState,
+    issueReducer,
+} from '../pages/issueInfo/state/issueReducer';
 
-const initialState = {
-    loading: true,
-    error: '',
-    issues: [],
-};
+// const initialState = {
+//     loading: true,
+//     error: '',
+//     issues: [],
+// };
 
-const reducer = (state, action) => {
-    console.log(action, 'action type');
+// const reducer = (state, action) => {
+//     console.log(action, 'action type');
 
-    switch (action.type) {
-        case 'FETCH_SUCCESS':
-            return {
-                loading: false,
-                issues: action.payload,
-                error: '',
-            };
-        case 'FETCH_ERROR':
-            return {
-                loading: false,
-                issues: [],
-                error: 'Something went wrong',
-            };
-        default:
-            return state;
-    }
-};
+//     switch (action.type) {
+//         case 'FETCH_SUCCESS':
+//             return {
+//                 loading: false,
+//                 issues: action.payload,
+//                 error: '',
+//             };
+//         case 'FETCH_ERROR':
+//             return {
+//                 loading: false,
+//                 issues: [],
+//                 error: 'Something went wrong',
+//             };
+//         default:
+//             return state;
+//     }
+// };
 
 const Issues = () => {
-    const [state, dispatch] = useReducer(reducer, initialState);
+    const [state, dispatch] = useReducer(issueReducer, initialState);
     const [page, setPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [labelStatus, setLabelStatus] = useState(false);
@@ -55,7 +59,7 @@ const Issues = () => {
     const navigate = useNavigate();
 
     const toComment = (num) => {
-        navigate(`/comments/${num}`);
+        navigate(`/issues/${num}`);
     };
 
     useEffect(() => {
