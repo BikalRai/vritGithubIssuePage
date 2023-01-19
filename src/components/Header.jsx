@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import {
-    Breadcrumbs,
     Button,
-    ButtonGroup,
     Chip,
-    ClickAwayListener,
     Container,
     Divider,
     FormControl,
     Grid,
-    Grow,
     Icon,
     InputAdornment,
     List,
@@ -19,10 +15,7 @@ import {
     ListItemText,
     Menu,
     MenuItem,
-    MenuList,
     OutlinedInput,
-    Paper,
-    Popper,
     SpeedDial,
     SpeedDialAction,
     SpeedDialIcon,
@@ -129,10 +122,7 @@ const Header = () => {
                                                     </ListItemButton>
                                                 </ListItem>
                                                 <ListItem disablePadding>
-                                                    <ListItemButton
-                                                        component="a"
-                                                        href="#simple-list"
-                                                    >
+                                                    <ListItemButton component="a">
                                                         <ListItemText primary="Spam" />
                                                     </ListItemButton>
                                                 </ListItem>
@@ -190,10 +180,7 @@ const Header = () => {
                                                     </ListItemButton>
                                                 </ListItem>
                                                 <ListItem disablePadding>
-                                                    <ListItemButton
-                                                        component="a"
-                                                        href="#simple-list"
-                                                    >
+                                                    <ListItemButton component="a">
                                                         <ListItemText primary="Spam" />
                                                     </ListItemButton>
                                                 </ListItem>
@@ -251,10 +238,7 @@ const Header = () => {
                                                     </ListItemButton>
                                                 </ListItem>
                                                 <ListItem disablePadding>
-                                                    <ListItemButton
-                                                        component="a"
-                                                        href="#simple-list"
-                                                    >
+                                                    <ListItemButton component="a">
                                                         <ListItemText primary="Spam" />
                                                     </ListItemButton>
                                                 </ListItem>
@@ -310,11 +294,11 @@ const Header = () => {
                             <Button>
                                 Filters <ArrowDropDown />
                             </Button>
-                            <Menu>
+                            {/* <Menu>
                                 <MenuItem>One</MenuItem>
                                 <MenuItem>Two</MenuItem>
                                 <MenuItem>Three</MenuItem>
-                            </Menu>
+                            </Menu> */}
 
                             <FormControl sx={{ width: 'min(100%, 50rem)' }}>
                                 <OutlinedInput
@@ -333,22 +317,6 @@ const Header = () => {
                         </Grid>
 
                         <Grid item>
-                            {/* <ButtonGroup
-                                variant="outlined"
-                                aria-label="outlined button group"
-                            >
-                                <Button>One</Button>
-                                <Button>Two</Button>
-                            </ButtonGroup>
-                        </Grid>
-                        <Grid>
-                            <Button
-                                variant="contained"
-                                color="success"
-                                sx={{ textTransform: 'capitalize' }}
-                            >
-                                New issue
-                            </Button> */}
                             <SpeedDial
                                 ariaLabel="SpeedDial basic example"
                                 // sx={{
