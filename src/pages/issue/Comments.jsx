@@ -2,10 +2,11 @@ import { LocalDining } from '@mui/icons-material';
 import { Typography } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useReducer, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { initialState, issueReducer } from '../issueInfo/state/issueReducer';
 const Comments = () => {
     const [data, dispatch] = useReducer(issueReducer, initialState);
-    const [comment, setComment] = useState('');
+    const { issueNumber } = useParams();
 
     const getData = () => {
         axios
@@ -17,42 +18,13 @@ const Comments = () => {
             .catch((error) => dispatch({ type: 'FETCH_ERROR' }));
     };
 
-    const getComment = () => {
-        axios
-            .get(
-                `https://api.github.com/repos/facebook/react/issues/${data.issues.number.body}`
-            )
-            .then(({ data }) => {
-                console.log(data, 'first');
-            });
-    };
-
-    // const getComments = () => {
-    //     axios
-    //         .get(
-    //             `https://api.github.com/repos/facebook/react/issues/${data.issues.number}/comments`
-    //         )
-    //         .then(({ data }) => {
-    //             dispatch({ type: 'FETCH_SUCCESS', payload: data });
-    //         })
-    //         .catch((error) => {
-    //             dispatch({ type: 'FETCH_ERROR' });
-    //         });
-    // };
-
     useEffect(() => {
         getData();
         // getComments();
     }, []);
 
     console.log(data, 'iss');
-    return (
-        <>
-            {data.issues.map((issue) => {
-                return <Typography>{issue.body}</Typography>;
-            })}
-        </>
-    );
+    return <>{issueNumber}</>;
 };
 
 export default Comments;
