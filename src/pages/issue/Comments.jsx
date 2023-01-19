@@ -52,10 +52,10 @@ const Comments = () => {
     console.log(issueDetail, 'iss');
     return (
         <>
-            <Typography sx={{ backgroundColor: 'red' }}>
+            <Typography variant="subtitle1" sx={{ backgroundColor: 'red' }}>
                 {issueDetail.details.body}
             </Typography>
-            <Typography sx={{ backgroundColor: 'lightblue' }}>
+            <Typography variant="h6" sx={{ backgroundColor: 'lightblue' }}>
                 {issueDetail.comments.map((comment) => comment.body)}
             </Typography>
         </>
