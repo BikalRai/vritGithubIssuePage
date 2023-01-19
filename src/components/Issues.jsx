@@ -149,7 +149,7 @@ const Issues = () => {
                                                 </Badge>
                                                 <Typography
                                                     component={Link}
-                                                    to={`/comments/${issue.number}`}
+                                                    to={`/issues/${issue.number}`}
                                                 >
                                                     {issue.title}
                                                 </Typography>
