@@ -9,6 +9,7 @@ import {
     issueDetailsReducer,
 } from '../issueInfo/state/commentReducer';
 import './comment.css';
+import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 const Comments = () => {
     // const [data, dispatch] = useReducer(issueReducer, initialState);
@@ -20,59 +21,60 @@ const Comments = () => {
 
     const getData = async () => {
         try {
-            await axios
-                .get(
-                    `https://api.github.com/repos/facebook/react/issues/${issueNumber}`
-                )
-                .then(({ data }) => {
-                    dispatch({ type: 'FETCH_SUCCESS', payload: data });
-                    console.log(data, 'data');
-                });
-        } catch (error) {
-            console.log('Error');
-        }
+            const { data: userdetail } = await axios.get(
+                `https://api.github.com/repos/facebook/react/issues/${issueNumber}`
+            );
 
-        try {
-            await axios
-                .get(
-                    `https://api.github.com/repos/facebook/react/issues/${issueNumber}/comments`
-                )
-                .then(({ data }) => {
-                    console.log(data, 'second');
-                    dispatch({ type: 'FETCH_COMMENT_SUCCESS', payload: data });
-                });
+            const { data } = await axios.post(
+                `https://api.github.com/markdown`,
+                {
+                    text: userdetail.body,
+                }
+            );
+
+            dispatch({ type: 'FETCH_SUCCESS', payload: data });
+            console.log(userdetail, 'data');
+
+            const { data: comments } = await axios.get(
+                `https://api.github.com/repos/facebook/react/issues/${issueNumber}/comments`
+            );
+            dispatch({ type: 'FETCH_COMMENT_SUCCESS', payload: comments });
+            console.log(comments, 'try me!!');
+
+            comments.map((one) => {
+                console.log(one, 'one!!');
+            });
+
+            console.log(data, ' iam superman!!');
         } catch (error) {
             console.log('Error');
         }
     };
 
+    // const postComments = () => {
+    //     console.log('i am running');
+    //     console.log(issueDetail, 'I am detail');
+    //     issueDetail.comments.map((comment) => {
+    //         console.log(comment, 'WOohoo!!');
+    //         axios
+    //             .post(`https://api.github.com/markdown`, {
+    //                 text: `${comment.body}`,
+    //             })
+    //             .then((res) => console.log(res, 'wow!!'));
+    //     });
+    // };
+
     useEffect(() => {
         getData();
+
         // getComments();
+        // postComments();
     }, []);
 
-    console.log(issueDetail, 'iss');
+    console.log(issueDetail.details, 'iss');
     return (
         <>
-            <Typography
-                variant="subtitle1"
-                sx={{ backgroundColor: 'steelblue' }}
-            >
-                {issueDetail.details.body}
-            </Typography>
-            {issueDetail.comments.map((comment) => {
-                return (
-                    <Grid className="box">
-                        <Avatar
-                            alt="Remy Sharp"
-                            src={comment.user.avatar_url}
-                        />
-                        <span>{comment.user.login}</span>
-                        <span>{comment.created_at}</span>
-                        <Typography>{comment.body}</Typography>
-                    </Grid>
-                );
-            })}
+            <Typography variant="body2"></Typography>
         </>
     );
 };
